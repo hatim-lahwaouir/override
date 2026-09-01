@@ -18,6 +18,9 @@
 ### 1- First find where the buffer overflow exists (after 72 bytes)
 ### 2- I brute-forced the canary from the child by sending one byte at a time. If the child is still running, the byte sent is part of the canary; if it shuts down, we have a false canary prediction.
 ### 3- Find a stop gadget: the address of an instruction that hangs the program and doesn't segfault it.
+```markdown
+(offset 72 bytes) + (canary) + (prediction of stop gadget) -> If the program segfaults, it's not a stop gadget. If it doesn't and the process hung, it's a stop gadget
+```
 
 ### 4- Use the stop gadget to find a ret instruction that we need to use for brute-forcing. If there is a function that spawns a shell inside the code, it is used to 16-byte realign the stack.
 
@@ -27,3 +30,6 @@
 
 ### 5- Then, after some brute-forcing, we found that the address at 0x40137f spawns the shell, and from there we got the flag and moved to the next level.
 
+```markdown
+(offset 72 bytes) + (canary) + (ret instruction) + (address of function that spawns the shell) -> the exploit 
+```
